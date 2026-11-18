@@ -1,0 +1,19 @@
+{
+  "name": "africouture-pro",
+  "version": "1.0.0",
+  "private": true,
+  "description": "AfriCouture Pro • Logiciel SaaS de Gestion d'Atelier de Couture en Côte d'Ivoire",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "keywords": [
+    "couture",
+    "saas",
+    "abidjan",
+    "cote-divoire",
+    "atelier",
+    "mesures"
+  ],
+  "author": "AfriCouture Team",
+  "license": "ISC"
+}

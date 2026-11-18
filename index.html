@@ -1,0 +1,1348 @@
+<!DOCTYPE html>
+<html lang="fr" class="h-full bg-[#07090e]">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <title>AfriCouture Pro • Logiciel Atelier Mobile & Bureau</title>
+  <meta name="theme-color" content="#07090e" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="AfriCouture" />
+  <meta name="format-detection" content="telephone=no" />
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              400: '#fbbf24',
+              500: '#f59e0b',
+              600: '#d97706',
+            },
+            nuit: {
+              950: '#05070a',
+              900: '#07090e',
+              850: '#0d111a',
+              800: '#131926',
+              750: '#1a2233',
+              700: '#232d42',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Optimisation Mobile Touch Native */
+    html, body {
+      height: 100%;
+      background-color: #07090e;
+      color: #f1f5f9;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+    }
+
+    /* Empêche l'effet de zoom involontaire sur iPhone Safari lors du tap sur un champ */
+    @media (max-width: 640px) {
+      input, select, textarea {
+        font-size: 16px !important;
+      }
+    }
+
+    /* Zones de sécurité pour les iPhones modernes (encoches et barres d'accueil) */
+    .safe-top {
+      padding-top: max(10px, env(safe-area-inset-top, 10px));
+    }
+    .safe-bottom-nav {
+      padding-bottom: max(10px, env(safe-area-inset-bottom, 10px));
+    }
+    .safe-padding-content {
+      padding-bottom: max(96px, calc(env(safe-area-inset-bottom, 0px) + 90px));
+    }
+
+    /* Touch Targets : Taille minimale 46px pour doigts sur écran tactile */
+    .touch-target {
+      min-height: 46px;
+      touch-action: manipulation;
+    }
+
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+    /* Animation du tiroir coulissant */
+    .drawer-open #mobileDrawer {
+      transform: translateX(0);
+    }
+    .drawer-open #drawerBackdrop {
+      opacity: 1;
+      pointer-events: auto;
+    }
+  </style>
+</head>
+<body class="h-full bg-nuit-900 text-slate-100 flex flex-col md:flex-row antialiased overflow-hidden select-none">
+
+  <!-- ========================================================================= -->
+  <!-- 1. VOLET LATÉRAL COULISSANT (SIDEBAR DESKTOP & DRAWER MOBILE)             -->
+  <!-- ========================================================================= -->
+
+  <!-- Fond sombre flouté pour fermeture en 1 tap -->
+  <div id="drawerBackdrop" onclick="closeDrawer()" 
+    class="fixed inset-0 bg-black/75 backdrop-blur-sm z-40 md:hidden opacity-0 pointer-events-none transition-opacity duration-300"></div>
+
+  <!-- Panneau latéral -->
+  <aside id="mobileDrawer" 
+    class="fixed md:static inset-y-0 left-0 z-50 w-[84%] sm:w-80 md:w-72 bg-nuit-850 border-r border-slate-800 flex flex-col transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-out shrink-0 safe-top">
+    
+    <!-- En-tête de la barre latérale -->
+    <div class="p-4 border-b border-slate-800/80">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-amber-400 via-amber-500 to-amber-600 flex items-center justify-center text-slate-950 font-black shadow-lg shadow-amber-500/20 text-xl">
+            ✂️
+          </div>
+          <div>
+            <div class="flex items-center gap-1.5">
+              <span class="font-bold text-base text-white tracking-tight">AfriCouture</span>
+              <span class="text-[9px] font-black px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-400 border border-amber-500/30">PRO</span>
+            </div>
+            <p class="text-xs text-slate-400">Atelier Ciseau d'Or 🇨🇮</p>
+          </div>
+        </div>
+
+        <button onclick="closeDrawer()" aria-label="Fermer" 
+          class="md:hidden w-10 h-10 rounded-xl bg-nuit-800 border border-slate-700/60 text-slate-300 hover:text-white flex items-center justify-center active:scale-95 transition-transform">
+          ✕
+        </button>
+      </div>
+
+      <!-- Fiche rapide de l'atelier -->
+      <div class="mt-4 p-3 rounded-2xl bg-nuit-800/90 border border-slate-800 flex items-center justify-between">
+        <div>
+          <span class="text-[10px] font-bold uppercase text-slate-400 block tracking-wider">Couturier Connecté</span>
+          <strong class="text-xs text-white block">Maître Ibrahima</strong>
+          <span class="text-[11px] text-amber-400/90">Cocody Angré, Abidjan</span>
+        </div>
+        <span class="px-2 py-1 rounded-full text-[10px] font-bold bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 flex items-center gap-1">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+          Pro
+        </span>
+      </div>
+    </div>
+
+    <!-- Rubriques complètes (Navigation tactile fluide) -->
+    <nav class="flex-1 p-3 space-y-1.5 overflow-y-auto no-scrollbar text-xs">
+      
+      <p class="px-3 pt-2 pb-1 text-[10px] font-bold uppercase tracking-wider text-slate-400">Gestion de l'Atelier</p>
+
+      <button onclick="switchTab('dashboard')" id="nav-dashboard" class="nav-btn touch-target w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-semibold transition-all text-left bg-amber-500/15 text-amber-400 border border-amber-500/30 active:scale-98">
+        <span class="text-lg">📊</span>
+        <span class="flex-1 text-sm font-medium">Tableau de bord</span>
+      </button>
+
+      <button onclick="switchTab('commandes')" id="nav-commandes" class="nav-btn touch-target w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-medium text-slate-300 hover:text-white hover:bg-nuit-800 transition-all text-left active:scale-98">
+        <span class="text-lg">👗</span>
+        <span class="flex-1 text-sm">Commandes en atelier</span>
+        <span id="badgeOrdersCount" class="px-2 py-0.5 rounded-full text-xs font-mono font-bold bg-nuit-750 text-amber-400">0</span>
+      </button>
+
+      <button onclick="switchTab('mesures')" id="nav-mesures" class="nav-btn touch-target w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-medium text-slate-300 hover:text-white hover:bg-nuit-800 transition-all text-left active:scale-98">
+        <span class="text-lg">📐</span>
+        <span class="flex-1 text-sm">Carnet de mesures (cm)</span>
+        <span id="badgeClientsCount" class="px-2 py-0.5 rounded-full text-xs font-mono font-bold bg-nuit-750 text-slate-400">0</span>
+      </button>
+
+      <button onclick="switchTab('catalogue')" id="nav-catalogue" class="nav-btn touch-target w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-medium text-slate-300 hover:text-white hover:bg-nuit-800 transition-all text-left active:scale-98">
+        <span class="text-lg">✂️</span>
+        <span class="flex-1 text-sm">Modèles & Métrages pagne</span>
+      </button>
+
+      <button onclick="switchTab('caisse')" id="nav-caisse" class="nav-btn touch-target w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-medium text-slate-300 hover:text-white hover:bg-nuit-800 transition-all text-left active:scale-98">
+        <span class="text-lg">💰</span>
+        <span class="flex-1 text-sm">Caisse & Soldes à encaisser</span>
+      </button>
+
+      <p class="px-3 pt-4 pb-1 text-[10px] font-bold uppercase tracking-wider text-slate-400">Services & Forfait</p>
+
+      <button onclick="switchTab('client-public')" id="nav-client-public" class="nav-btn touch-target w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-medium text-slate-300 hover:text-white hover:bg-nuit-800 transition-all text-left active:scale-98">
+        <span class="text-lg">🌐</span>
+        <span class="flex-1 text-sm">Site Suivi Client</span>
+      </button>
+
+      <button onclick="switchTab('abonnement')" id="nav-abonnement" class="nav-btn touch-target w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-medium text-slate-300 hover:text-white hover:bg-nuit-800 transition-all text-left active:scale-98">
+        <span class="text-lg">🛡️</span>
+        <span class="flex-1 text-sm">Mon Abonnement SaaS</span>
+      </button>
+
+    </nav>
+
+    <!-- Bas du tiroir : Action rapide et Contact -->
+    <div class="p-4 border-t border-slate-800 bg-nuit-900 space-y-2.5 safe-bottom-nav">
+      <button onclick="closeDrawer(); openOrderModal();" class="touch-target w-full bg-gradient-to-r from-amber-500 to-amber-600 active:scale-98 text-slate-950 font-bold py-3 px-4 rounded-xl flex items-center justify-center gap-2 text-sm shadow-md">
+        <span class="text-lg font-black">+</span>
+        <span>Nouvelle Commande</span>
+      </button>
+
+      <a href="https://wa.me/2250700000000?text=Bonjour,%20support%20AfriCouture" target="_blank"
+        class="touch-target w-full bg-nuit-800 hover:bg-nuit-750 text-emerald-400 border border-slate-700/80 font-semibold py-2 px-3 rounded-xl flex items-center justify-center gap-2 text-xs">
+        <span>💬 Assistance WhatsApp Développeur</span>
+      </a>
+    </div>
+
+  </aside>
+
+  <!-- ========================================================================= -->
+  <!-- 2. ZONE DE TRAVAIL PRINCIPALE (HEADER MOBILE + ONGLETS EN PLEIN ÉCRAN)    -->
+  <!-- ========================================================================= -->
+  <div class="flex-1 flex flex-col h-full min-w-0 overflow-hidden bg-nuit-900">
+    
+    <!-- HEADER SUPÉRIEUR MOBILE & BUREAU -->
+    <header class="h-16 bg-nuit-850/95 backdrop-blur border-b border-slate-800/80 px-3.5 sm:px-6 flex items-center justify-between shrink-0 z-30 safe-top">
+      
+      <!-- GAUCHE : Bouton Hamburger (☰) + Titre de l'onglet actif -->
+      <div class="flex items-center gap-2.5">
+        <button onclick="openDrawer()" aria-label="Ouvrir le menu"
+          class="md:hidden touch-target w-11 h-11 rounded-xl bg-nuit-800 border border-slate-700/80 text-amber-400 flex items-center justify-center active:scale-95 transition-transform shadow-sm">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.3" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
+
+        <div>
+          <h1 id="currentTabTitle" class="text-sm sm:text-base font-bold text-white tracking-tight flex items-center gap-1.5">
+            <span>📊</span> Tableau de bord
+          </h1>
+          <p id="currentTabSubtitle" class="text-[11px] text-slate-400 hidden sm:block">Gestion et confections en cours</p>
+        </div>
+      </div>
+
+      <!-- DROITE : Boutons d'Action Rapide -->
+      <div class="flex items-center gap-2">
+        <button onclick="openClientModal()" class="touch-target hidden sm:flex items-center gap-1.5 px-3 py-2 rounded-xl bg-nuit-800 hover:bg-nuit-750 text-slate-200 border border-slate-700 text-xs font-medium">
+          <span>+ Client</span>
+        </button>
+
+        <button onclick="openOrderModal()" class="touch-target px-3.5 sm:px-4 py-2 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-bold text-xs sm:text-sm shadow-md flex items-center gap-1.5 active:scale-95 transition-transform">
+          <span class="text-base font-black leading-none">+</span>
+          <span class="font-bold">Tenue</span>
+        </button>
+      </div>
+
+    </header>
+
+    <!-- CONTENU SCROLLABLE SANS COUPURE NI SOURIS PIÉGÉE -->
+    <main class="flex-1 overflow-y-auto no-scrollbar p-3 sm:p-6 safe-padding-content">
+      
+      <!-- ===================================================================== -->
+      <!-- ONGLET 1 : TABLEAU DE BORD                                            -->
+      <!-- ===================================================================== -->
+      <section id="tab-dashboard" class="tab-pane space-y-4">
+        
+        <!-- Cartes Indicateurs Clés (Adaptées pour écran de téléphone) -->
+        <div class="grid grid-cols-2 gap-2.5 sm:gap-4">
+          
+          <div class="p-3.5 rounded-2xl bg-nuit-850 border border-slate-800 shadow-sm flex flex-col justify-between">
+            <span class="text-[11px] font-semibold text-slate-400">Total Encaissé</span>
+            <p id="kpiTotalDeposit" class="text-lg sm:text-2xl font-bold font-mono text-emerald-400 mt-1">0 FCFA</p>
+            <span class="text-[10px] text-emerald-500/80 mt-1">Acomptes en caisse</span>
+          </div>
+
+          <div class="p-3.5 rounded-2xl bg-nuit-850 border border-slate-800 shadow-sm flex flex-col justify-between">
+            <span class="text-[11px] font-semibold text-slate-400">Reste à Récupérer</span>
+            <p id="kpiTotalRemaining" class="text-lg sm:text-2xl font-bold font-mono text-amber-400 mt-1">0 FCFA</p>
+            <span class="text-[10px] text-amber-400/80 mt-1">Soldes au retrait</span>
+          </div>
+
+          <div class="p-3.5 rounded-2xl bg-nuit-850 border border-slate-800 shadow-sm flex flex-col justify-between">
+            <span class="text-[11px] font-semibold text-slate-400">Tenues en Atelier</span>
+            <p id="kpiActiveOrders" class="text-lg sm:text-2xl font-bold font-mono text-white mt-1">0</p>
+            <span class="text-[10px] text-slate-400 mt-1">Sur les tables de coupe</span>
+          </div>
+
+          <div class="p-3.5 rounded-2xl bg-nuit-850 border border-slate-800 shadow-sm flex flex-col justify-between">
+            <span class="text-[11px] font-semibold text-slate-400">Total Commandes</span>
+            <p id="kpiTotalCa" class="text-lg sm:text-2xl font-bold font-mono text-white mt-1">0 FCFA</p>
+            <span class="text-[10px] text-slate-400 mt-1">Chiffre total</span>
+          </div>
+
+        </div>
+
+        <!-- Raccourcis d'action rapide sur mobile (Grands boutons tactiles) -->
+        <div class="grid grid-cols-2 gap-2 sm:gap-3">
+          <button onclick="openOrderModal()" class="touch-target p-3.5 rounded-2xl bg-nuit-850 border border-slate-800 hover:border-amber-500/40 text-left flex items-center gap-3 active:scale-98">
+            <div class="w-10 h-10 rounded-xl bg-amber-500/15 text-amber-400 flex items-center justify-center text-lg font-bold shrink-0">
+              ✂️
+            </div>
+            <div>
+              <strong class="text-xs text-white block">+ Tenue</strong>
+              <span class="text-[10px] text-slate-400">Enregistrer commande</span>
+            </div>
+          </button>
+
+          <button onclick="openClientModal()" class="touch-target p-3.5 rounded-2xl bg-nuit-850 border border-slate-800 hover:border-amber-500/40 text-left flex items-center gap-3 active:scale-98">
+            <div class="w-10 h-10 rounded-xl bg-sky-500/15 text-sky-400 flex items-center justify-center text-lg font-bold shrink-0">
+              📐
+            </div>
+            <div>
+              <strong class="text-xs text-white block">+ Mesures</strong>
+              <span class="text-[10px] text-slate-400">Nouveau client cm</span>
+            </div>
+          </button>
+        </div>
+
+        <!-- Commandes Urgentes (< 48h) -->
+        <div class="p-4 rounded-2xl bg-nuit-850 border border-slate-800 space-y-3">
+          <div class="flex items-center justify-between border-b border-slate-800 pb-2.5">
+            <div class="flex items-center gap-2">
+              <span class="w-2.5 h-2.5 rounded-full bg-rose-400 animate-pulse"></span>
+              <h3 class="font-bold text-xs sm:text-sm text-white">Tenues à Livrer d'Urgence (&le; 48h)</h3>
+            </div>
+            <button onclick="switchTab('commandes'); setOrderFilter('urgent');" class="text-xs text-amber-400 font-semibold">
+              Voir tout &rarr;
+            </button>
+          </div>
+          <div id="dashboardUrgentList" class="space-y-2 text-xs">
+            <!-- Rempli par JavaScript -->
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ===================================================================== -->
+      <!-- ONGLET 2 : COMMANDES EN ATELIER                                       -->
+      <!-- ===================================================================== -->
+      <section id="tab-commandes" class="tab-pane hidden space-y-3.5">
+        
+        <!-- Barre de Recherche & Filtres Glissants -->
+        <div class="space-y-2.5">
+          <!-- Recherche tactile -->
+          <div class="relative">
+            <input type="text" id="orderSearchInput" oninput="renderOrdersView()" 
+              placeholder="Rechercher client, vêtement ou CMD..."
+              class="touch-target w-full pl-10 pr-4 py-3 bg-nuit-850 border border-slate-700/80 rounded-2xl text-sm text-white placeholder-slate-400 focus:outline-none focus:border-amber-400 shadow-sm" />
+            <span class="absolute left-3.5 top-3.5 text-slate-400 text-sm">🔍</span>
+          </div>
+
+          <!-- Filtres horizontaux par geste glissant (Touch Swipeable) -->
+          <div class="flex items-center gap-2 overflow-x-auto no-scrollbar py-1">
+            <button onclick="setOrderFilter('all')" id="filter-all" class="filter-tab-btn touch-target px-3.5 py-2 rounded-xl text-xs font-bold bg-amber-500 text-slate-950 shrink-0">
+              Toutes (<span id="countAll">0</span>)
+            </button>
+            <button onclick="setOrderFilter('encours')" id="filter-encours" class="filter-tab-btn touch-target px-3.5 py-2 rounded-xl text-xs font-medium text-slate-300 bg-nuit-850 border border-slate-800 shrink-0">
+              En Atelier
+            </button>
+            <button onclick="setOrderFilter('bazin')" id="filter-bazin" class="filter-tab-btn touch-target px-3.5 py-2 rounded-xl text-xs font-medium text-slate-300 bg-nuit-850 border border-slate-800 shrink-0">
+              👑 Bazin Riche
+            </button>
+            <button onclick="setOrderFilter('wax')" id="filter-wax" class="filter-tab-btn touch-target px-3.5 py-2 rounded-xl text-xs font-medium text-slate-300 bg-nuit-850 border border-slate-800 shrink-0">
+              🌺 Wax & Pagne
+            </button>
+            <button onclick="setOrderFilter('urgent')" id="filter-urgent" class="filter-tab-btn touch-target px-3.5 py-2 rounded-xl text-xs font-medium text-rose-400 bg-nuit-850 border border-rose-500/30 shrink-0">
+              🚨 Urgences (&le; 48h)
+            </button>
+            <button onclick="setOrderFilter('impaye')" id="filter-impaye" class="filter-tab-btn touch-target px-3.5 py-2 rounded-xl text-xs font-medium text-amber-400 bg-nuit-850 border border-amber-500/30 shrink-0">
+              💵 Soldes Dus
+            </button>
+          </div>
+        </div>
+
+        <!-- Liste des Cartes de Commandes Tactiles -->
+        <div id="ordersContainer" class="space-y-3">
+          <!-- Injecté par JavaScript -->
+        </div>
+
+      </section>
+
+      <!-- ===================================================================== -->
+      <!-- ONGLET 3 : CARNET DE MESURES                                          -->
+      <!-- ===================================================================== -->
+      <section id="tab-mesures" class="tab-pane hidden space-y-3.5">
+        
+        <div class="flex items-center gap-2">
+          <input type="text" id="clientSearchInput" oninput="renderClientsView()" placeholder="Rechercher nom ou téléphone..."
+            class="touch-target flex-1 px-3.5 py-2.5 bg-nuit-850 border border-slate-700/80 rounded-2xl text-sm text-white placeholder-slate-400 focus:outline-none" />
+          <button onclick="openClientModal()" class="touch-target px-4 py-2.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-2xl text-xs shrink-0 shadow-sm">
+            + Client
+          </button>
+        </div>
+
+        <div id="clientsContainer" class="space-y-3">
+          <!-- Injecté par JavaScript -->
+        </div>
+
+      </section>
+
+      <!-- ===================================================================== -->
+      <!-- ONGLET 4 : CATALOGUE DE MODÈLES & MÉTRAGES                           -->
+      <!-- ===================================================================== -->
+      <section id="tab-catalogue" class="tab-pane hidden space-y-3.5">
+        
+        <div class="p-3.5 rounded-2xl bg-nuit-850 border border-slate-800">
+          <h2 class="font-bold text-sm text-white">Barème & Métrages de Pagne</h2>
+          <p class="text-xs text-slate-400 mt-0.5">Touchez un modèle pour préremplir une nouvelle commande :</p>
+        </div>
+
+        <div class="space-y-3">
+          
+          <div class="p-4 rounded-2xl bg-nuit-850 border border-slate-800 space-y-3">
+            <div class="flex items-start justify-between">
+              <div>
+                <span class="px-2 py-0.5 rounded font-bold bg-amber-500/15 text-amber-400 text-[10px] uppercase">Bazin Getzner</span>
+                <h3 class="font-bold text-white text-sm mt-1">Grand Boubou Cérémonie 3 Pièces</h3>
+                <p class="text-xs text-slate-400 mt-0.5">Broderie au fil de soie or • 3 pagnes (6 yards) • Satin duchesse</p>
+              </div>
+              <strong class="text-amber-400 font-mono text-sm shrink-0">45 000 FCFA</strong>
+            </div>
+            <button onclick="selectProposal('Grand Boubou 3 pièces Bazin Riche Brodé', 45000)" class="touch-target w-full py-2.5 bg-nuit-800 hover:bg-amber-500 hover:text-slate-950 text-amber-400 border border-amber-500/30 rounded-xl text-xs font-bold transition-all active:scale-98">
+              Sélectionner cette tenue &rarr;
+            </button>
+          </div>
+
+          <div class="p-4 rounded-2xl bg-nuit-850 border border-slate-800 space-y-3">
+            <div class="flex items-start justify-between">
+              <div>
+                <span class="px-2 py-0.5 rounded font-bold bg-pink-500/15 text-pink-400 text-[10px] uppercase">Wax Hollandais</span>
+                <h3 class="font-bold text-white text-sm mt-1">Robe Sirène Gala avec Traîne</h3>
+                <p class="text-xs text-slate-400 mt-0.5">Baleinage bustier intégré • 2 pagnes (4 yards) • Doublure organza</p>
+              </div>
+              <strong class="text-amber-400 font-mono text-sm shrink-0">25 000 FCFA</strong>
+            </div>
+            <button onclick="selectProposal('Robe Sirène Wax Hollandais Cérémonie', 25000)" class="touch-target w-full py-2.5 bg-nuit-800 hover:bg-amber-500 hover:text-slate-950 text-amber-400 border border-amber-500/30 rounded-xl text-xs font-bold transition-all active:scale-98">
+              Sélectionner cette tenue &rarr;
+            </button>
+          </div>
+
+          <div class="p-4 rounded-2xl bg-nuit-850 border border-slate-800 space-y-3">
+            <div class="flex items-start justify-between">
+              <div>
+                <span class="px-2 py-0.5 rounded font-bold bg-blue-500/15 text-blue-400 text-[10px] uppercase">Homme Moderne</span>
+                <h3 class="font-bold text-white text-sm mt-1">Veste Saharienne en Lin & Kente</h3>
+                <p class="text-xs text-slate-400 mt-0.5">4 poches à soufflets, col officier • 3m lin ou 2 pagnes tissés</p>
+              </div>
+              <strong class="text-amber-400 font-mono text-sm shrink-0">30 000 FCFA</strong>
+            </div>
+            <button onclick="selectProposal('Ensemble Veste Saharienne en Lin', 30000)" class="touch-target w-full py-2.5 bg-nuit-800 hover:bg-amber-500 hover:text-slate-950 text-amber-400 border border-amber-500/30 rounded-xl text-xs font-bold transition-all active:scale-98">
+              Sélectionner cette tenue &rarr;
+            </button>
+          </div>
+
+          <div class="p-4 rounded-2xl bg-nuit-850 border border-slate-800 space-y-3">
+            <div class="flex items-start justify-between">
+              <div>
+                <span class="px-2 py-0.5 rounded font-bold bg-emerald-500/15 text-emerald-400 text-[10px] uppercase">Femme Chic</span>
+                <h3 class="font-bold text-white text-sm mt-1">Ensemble Kaba / Jupe & Corsage</h3>
+                <p class="text-xs text-slate-400 mt-0.5">Coupe ample traditionnelle • 2 à 3 pagnes de tissu</p>
+              </div>
+              <strong class="text-amber-400 font-mono text-sm shrink-0">20 000 FCFA</strong>
+            </div>
+            <button onclick="selectProposal('Ensemble Kaba Jupe & Corsage Wax', 20000)" class="touch-target w-full py-2.5 bg-nuit-800 hover:bg-amber-500 hover:text-slate-950 text-amber-400 border border-amber-500/30 rounded-xl text-xs font-bold transition-all active:scale-98">
+              Sélectionner cette tenue &rarr;
+            </button>
+          </div>
+
+        </div>
+
+      </section>
+
+      <!-- ===================================================================== -->
+      <!-- ONGLET 5 : CAISSE & SOLDES À ENCAISSER                                -->
+      <!-- ===================================================================== -->
+      <section id="tab-caisse" class="tab-pane hidden space-y-3.5">
+        
+        <div class="grid grid-cols-2 gap-2.5">
+          <div class="p-3.5 rounded-2xl bg-nuit-850 border border-slate-800">
+            <span class="text-[11px] text-slate-400">Total Encaissé</span>
+            <p id="caisseTotalDeposit" class="text-lg font-bold font-mono text-emerald-400 mt-1">0 FCFA</p>
+          </div>
+          <div class="p-3.5 rounded-2xl bg-nuit-850 border border-slate-800">
+            <span class="text-[11px] text-slate-400">Soldes Impayés</span>
+            <p id="caisseTotalRemaining" class="text-lg font-bold font-mono text-amber-400 mt-1">0 FCFA</p>
+          </div>
+        </div>
+
+        <div class="p-4 rounded-2xl bg-nuit-850 border border-slate-800 space-y-3">
+          <h3 class="font-bold text-xs sm:text-sm text-white">Clients avec Soldes Dus au Retrait</h3>
+          <p class="text-xs text-slate-400">Relancez en 1 clic sur WhatsApp avec le montant exact :</p>
+          
+          <div id="caisseUnpaidList" class="space-y-2 text-xs">
+            <!-- Injecté par JS -->
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ===================================================================== -->
+      <!-- ONGLET 6 : SITE PUBLIC SUIVI CLIENT                                   -->
+      <!-- ===================================================================== -->
+      <section id="tab-client-public" class="tab-pane hidden space-y-4">
+        
+        <div class="p-5 rounded-3xl bg-nuit-850 border border-slate-800 text-center space-y-3">
+          <span class="inline-block px-3 py-1 rounded-full bg-amber-500/15 border border-amber-500/30 text-amber-400 text-xs font-semibold">
+            ✂️ Atelier Ciseau d'Or • Abidjan
+          </span>
+          <h2 class="text-lg sm:text-2xl font-bold text-white">Suivez Votre Tenue en Ligne</h2>
+          <p class="text-xs text-slate-400">
+            Entrez votre numéro de téléphone WhatsApp ou le code du reçu :
+          </p>
+
+          <div class="flex gap-2 pt-1">
+            <input type="text" id="publicSearchInput" placeholder="Ex: 0708091011 ou CMD-1001"
+              class="touch-target flex-1 px-3.5 py-2.5 rounded-xl bg-nuit-800 border border-slate-700 text-sm text-white placeholder-slate-400 focus:outline-none focus:border-amber-400" />
+            <button onclick="trackPublicOrder()" class="touch-target px-4 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs shadow">
+              Vérifier
+            </button>
+          </div>
+        </div>
+
+        <div id="publicResultContainer" class="hidden"></div>
+
+      </section>
+
+      <!-- ===================================================================== -->
+      <!-- ONGLET 7 : MON ABONNEMENT SAAS                                        -->
+      <!-- ===================================================================== -->
+      <section id="tab-abonnement" class="tab-pane hidden space-y-4">
+        
+        <div class="p-5 rounded-3xl bg-nuit-850 border border-slate-800 space-y-3.5">
+          <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+            <div>
+              <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-400 block">Abonnement Actif</span>
+              <h2 class="text-base font-bold text-white">AfriCouture Pro</h2>
+            </div>
+            <div class="text-right">
+              <span class="text-sm font-bold font-mono text-amber-400">15 000 FCFA/m</span>
+              <span class="text-[10px] text-slate-400 block">Renouvellement Wave</span>
+            </div>
+          </div>
+
+          <div class="p-3 bg-nuit-800 rounded-2xl border border-slate-750 space-y-2 text-xs">
+            <span class="font-bold text-white block">Numéros de règlement en Côte d'Ivoire :</span>
+            <div class="grid grid-cols-2 gap-2 text-[11px]">
+              <div class="p-2 rounded-xl bg-nuit-900 border border-slate-800">
+                <span class="text-slate-400 block">Wave CI</span>
+                <strong class="text-white font-mono">+225 07 00 00 00 00</strong>
+              </div>
+              <div class="p-2 rounded-xl bg-nuit-900 border border-slate-800">
+                <span class="text-slate-400 block">Orange Money</span>
+                <strong class="text-white font-mono">+225 07 00 00 00 00</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+    </main>
+
+    <!-- ========================================================================= -->
+    <!-- 3. BARRE DE NAVIGATION INFÉRIEURE TACTILE (ERGONOMIE POUCE SMARTPHONE)   -->
+    <!-- ========================================================================= -->
+    <nav class="md:hidden fixed bottom-0 left-0 right-0 h-16 bg-nuit-850/95 backdrop-blur-md border-t border-slate-800/90 flex items-center justify-around px-1 z-30 safe-bottom-nav">
+      
+      <button onclick="switchTab('dashboard')" id="bnav-dashboard" class="bnav-btn touch-target flex flex-col items-center justify-center flex-1 py-1 text-amber-400 font-bold active:scale-95 transition-transform">
+        <span class="text-xl">📊</span>
+        <span class="text-[10px] tracking-tight">Bord</span>
+      </button>
+
+      <button onclick="switchTab('commandes')" id="bnav-commandes" class="bnav-btn touch-target flex flex-col items-center justify-center flex-1 py-1 text-slate-400 font-medium active:scale-95 transition-transform">
+        <span class="text-xl">👗</span>
+        <span class="text-[10px] tracking-tight">Commandes</span>
+      </button>
+
+      <button onclick="switchTab('mesures')" id="bnav-mesures" class="bnav-btn touch-target flex flex-col items-center justify-center flex-1 py-1 text-slate-400 font-medium active:scale-95 transition-transform">
+        <span class="text-xl">📐</span>
+        <span class="text-[10px] tracking-tight">Mesures</span>
+      </button>
+
+      <button onclick="switchTab('caisse')" id="bnav-caisse" class="bnav-btn touch-target flex flex-col items-center justify-center flex-1 py-1 text-slate-400 font-medium active:scale-95 transition-transform">
+        <span class="text-xl">💰</span>
+        <span class="text-[10px] tracking-tight">Caisse</span>
+      </button>
+
+      <button onclick="openDrawer()" class="touch-target flex flex-col items-center justify-center flex-1 py-1 text-slate-400 font-medium active:scale-95 transition-transform">
+        <span class="text-xl">☰</span>
+        <span class="text-[10px] tracking-tight">Menu</span>
+      </button>
+
+    </nav>
+
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- 4. MODALS TACTILES (BOTTOM-SHEET SUR SMARTPHONE)                          -->
+  <!-- ========================================================================= -->
+
+  <!-- Modal Nouvelle Commande -->
+  <div id="modalOrder" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-end sm:items-center justify-center p-0 sm:p-4">
+    <div class="bg-nuit-850 border border-slate-800 rounded-t-3xl sm:rounded-3xl max-w-lg w-full p-5 max-h-[90vh] overflow-y-auto no-scrollbar space-y-4 safe-bottom-nav">
+      
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <h3 class="font-bold text-base text-white">Enregistrer une Nouvelle Tenue</h3>
+        <button onclick="closeModal('modalOrder')" class="w-9 h-9 rounded-full bg-nuit-800 text-slate-400 hover:text-white font-bold flex items-center justify-center active:scale-95">✕</button>
+      </div>
+
+      <form id="orderForm" onsubmit="event.preventDefault(); submitOrder();" class="space-y-3.5 text-xs">
+        <div>
+          <label class="block font-semibold text-slate-300 mb-1">Choisir un Client Existant</label>
+          <select id="fClientSelect" onchange="onSelectClientChange()" class="touch-target w-full px-3 py-2.5 bg-nuit-800 border border-slate-700 rounded-xl text-white">
+            <option value="">-- Ou saisir un nouveau client ci-dessous --</option>
+          </select>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block font-semibold text-slate-300 mb-1">Nom Complet Client *</label>
+            <input type="text" id="fClientName" required placeholder="Ex: M. Jean Kouassi" class="touch-target w-full px-3 py-2.5 bg-nuit-800 border border-slate-700 rounded-xl text-white" />
+          </div>
+          <div>
+            <label class="block font-semibold text-slate-300 mb-1">Téléphone WhatsApp *</label>
+            <input type="tel" id="fClientPhone" required placeholder="Ex: 0708091011" class="touch-target w-full px-3 py-2.5 bg-nuit-800 border border-slate-700 rounded-xl text-white" />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block font-semibold text-slate-300 mb-1">Modèle de Vêtement *</label>
+            <input type="text" id="fItem" required placeholder="Ex: Grand Boubou Bazin 3 pièces" class="touch-target w-full px-3 py-2.5 bg-nuit-800 border border-slate-700 rounded-xl text-white" />
+          </div>
+          <div>
+            <label class="block font-semibold text-slate-300 mb-1">Date Promise au Client *</label>
+            <input type="date" id="fDeliveryDate" required class="touch-target w-full px-3 py-2.5 bg-nuit-800 border border-slate-700 rounded-xl text-white" />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-3 gap-2">
+          <div>
+            <label class="block font-semibold text-slate-300 mb-1">Prix Total *</label>
+            <input type="number" id="fTotal" oninput="calculateModalRest()" required placeholder="FCFA" class="touch-target w-full px-3 py-2 bg-nuit-800 border border-slate-700 rounded-xl text-white font-mono" />
+          </div>
+          <div>
+            <label class="block font-semibold text-slate-300 mb-1">Acompte</label>
+            <input type="number" id="fDeposit" oninput="calculateModalRest()" placeholder="0" class="touch-target w-full px-3 py-2 bg-nuit-800 border border-slate-700 rounded-xl text-white font-mono" />
+          </div>
+          <div>
+            <label class="block font-semibold text-slate-400 mb-1">Reste Dû</label>
+            <input type="text" id="fRest" readonly value="0 FCFA" class="touch-target w-full px-3 py-2 bg-nuit-950 border border-slate-800 rounded-xl text-amber-400 font-bold font-mono" />
+          </div>
+        </div>
+
+        <div class="pt-2 flex justify-end gap-2">
+          <button type="button" onclick="closeModal('modalOrder')" class="touch-target px-4 py-2.5 rounded-xl bg-nuit-800 text-slate-300 font-medium active:scale-95">Annuler</button>
+          <button type="submit" class="touch-target px-5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold shadow active:scale-95">Valider la Commande</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal Fiche de Mesures Client -->
+  <div id="modalClient" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-end sm:items-center justify-center p-0 sm:p-4">
+    <div class="bg-nuit-850 border border-slate-800 rounded-t-3xl sm:rounded-3xl max-w-lg w-full p-5 max-h-[90vh] overflow-y-auto no-scrollbar space-y-4 safe-bottom-nav">
+      
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <h3 id="clientModalTitle" class="font-bold text-base text-white">Fiche de Mesures Client</h3>
+        <button onclick="closeModal('modalClient')" class="w-9 h-9 rounded-full bg-nuit-800 text-slate-400 hover:text-white font-bold flex items-center justify-center active:scale-95">✕</button>
+      </div>
+
+      <form id="clientForm" onsubmit="event.preventDefault(); submitClient();" class="space-y-3.5 text-xs">
+        <input type="hidden" id="cId" />
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block font-semibold text-slate-300 mb-1">Nom & Prénoms *</label>
+            <input type="text" id="cName" required placeholder="Ex: Mme Awa Traoré" class="touch-target w-full px-3 py-2.5 bg-nuit-800 border border-slate-700 rounded-xl text-white" />
+          </div>
+          <div>
+            <label class="block font-semibold text-slate-300 mb-1">Téléphone WhatsApp *</label>
+            <input type="tel" id="cPhone" required placeholder="Ex: 0504030201" class="touch-target w-full px-3 py-2.5 bg-nuit-800 border border-slate-700 rounded-xl text-white" />
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-semibold text-slate-300 mb-1">Catégorie</label>
+          <select id="cGender" class="touch-target w-full px-3 py-2 bg-nuit-800 border border-slate-700 rounded-xl text-white">
+            <option value="Femme">Femme</option>
+            <option value="Homme">Homme</option>
+            <option value="Enfant">Enfant</option>
+          </select>
+        </div>
+
+        <div class="p-3 bg-nuit-800 rounded-2xl border border-slate-700/80 space-y-2">
+          <span class="text-[10px] uppercase font-bold text-amber-400 block tracking-wider">Mensurations Tailleur (en cm)</span>
+          <div class="grid grid-cols-3 gap-2">
+            <div>
+              <label class="block text-[10px] text-slate-400">Épaule</label>
+              <input type="number" id="cm_epaule" placeholder="cm" class="touch-target w-full px-2 py-1.5 bg-nuit-900 border border-slate-700 rounded-lg text-white font-mono" />
+            </div>
+            <div>
+              <label class="block text-[10px] text-slate-400">Poitrine</label>
+              <input type="number" id="cm_poitrine" placeholder="cm" class="touch-target w-full px-2 py-1.5 bg-nuit-900 border border-slate-700 rounded-lg text-white font-mono" />
+            </div>
+            <div>
+              <label class="block text-[10px] text-slate-400">Taille</label>
+              <input type="number" id="cm_taille" placeholder="cm" class="touch-target w-full px-2 py-1.5 bg-nuit-900 border border-slate-700 rounded-lg text-white font-mono" />
+            </div>
+            <div>
+              <label class="block text-[10px] text-slate-400">Bassin</label>
+              <input type="number" id="cm_bassin" placeholder="cm" class="touch-target w-full px-2 py-1.5 bg-nuit-900 border border-slate-700 rounded-lg text-white font-mono" />
+            </div>
+            <div>
+              <label class="block text-[10px] text-slate-400">Manche</label>
+              <input type="number" id="cm_manche" placeholder="cm" class="touch-target w-full px-2 py-1.5 bg-nuit-900 border border-slate-700 rounded-lg text-white font-mono" />
+            </div>
+            <div>
+              <label class="block text-[10px] text-slate-400">Longueur</label>
+              <input type="number" id="cm_pantalon" placeholder="cm" class="touch-target w-full px-2 py-1.5 bg-nuit-900 border border-slate-700 rounded-lg text-white font-mono" />
+            </div>
+          </div>
+        </div>
+
+        <div class="pt-2 flex justify-end gap-2">
+          <button type="button" onclick="closeModal('modalClient')" class="touch-target px-4 py-2.5 rounded-xl bg-nuit-800 text-slate-300 font-medium active:scale-95">Annuler</button>
+          <button type="submit" class="touch-target px-5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold shadow active:scale-95">Enregistrer la Fiche</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- 5. JAVASCRIPT DU LOGICIEL MOBILE FIRST                                     -->
+  <!-- ========================================================================= -->
+  <script>
+    const SEED_CLIENTS = [
+      { id: "CLI-1", name: "Mme Awa Traoré", phone: "0708091011", gender: "Femme", measures: { epaule: 39, poitrine: 94, taille: 76, bassin: 104, manche: 58, pantalon: 106 } },
+      { id: "CLI-2", name: "M. Kouamé Jean", phone: "0504030201", gender: "Homme", measures: { epaule: 47, poitrine: 108, taille: 92, bassin: 102, manche: 64, pantalon: 110 } },
+      { id: "CLI-3", name: "Mme Bakayoko Salimata", phone: "0102030405", gender: "Femme", measures: { epaule: 41, poitrine: 98, taille: 82, bassin: 112, manche: 60, pantalon: 108 } }
+    ];
+
+    const SEED_ORDERS = [
+      { id: "CMD-1001", clientName: "Mme Awa Traoré", phone: "0708091011", item: "Robe Sirène Wax Hollandais Cérémonie", category: "wax", total: 35000, deposit: 20000, deliveryDate: new Date(Date.now() + 86400000).toISOString().split('T')[0], status: "essayage" },
+      { id: "CMD-1002", clientName: "M. Kouamé Jean", phone: "0504030201", item: "Grand Boubou 3 pièces Bazin Getzner", category: "bazin", total: 45000, deposit: 30000, deliveryDate: new Date(Date.now() + 2*86400000).toISOString().split('T')[0], status: "confection" },
+      { id: "CMD-1003", clientName: "Mme Bakayoko Salimata", phone: "0102030405", item: "Ensemble Kaba Pagne Tissé Vlisco", category: "wax", total: 25000, deposit: 25000, deliveryDate: new Date(Date.now() + 4*86400000).toISOString().split('T')[0], status: "pret" },
+      { id: "CMD-1004", clientName: "M. Touré Mamadou", phone: "0788990011", item: "Veste Saharienne en Lin & Kente", category: "homme", total: 30000, deposit: 10000, deliveryDate: new Date(Date.now() + 5*86400000).toISOString().split('T')[0], status: "coupe" }
+    ];
+
+    const STATUS_MAP = {
+      recu: { label: "1. Tissu Reçu", color: "bg-slate-800 text-slate-300" },
+      coupe: { label: "2. En Coupe", color: "bg-sky-500/20 text-sky-400 border border-sky-500/30" },
+      confection: { label: "3. En Confection", color: "bg-indigo-500/20 text-indigo-400 border border-indigo-500/30" },
+      essayage: { label: "4. Prêt Essayage", color: "bg-amber-500/20 text-amber-400 border border-amber-500/30" },
+      pret: { label: "5. Prêt au Retrait", color: "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30" },
+      livre: { label: "6. Livré", color: "bg-slate-800 text-slate-500" }
+    };
+
+    const TAB_INFO = {
+      'dashboard': { title: "📊 Tableau de bord", subtitle: "Indicateurs clés et commandes en cours" },
+      'commandes': { title: "👗 Commandes en Atelier", subtitle: "Suivi des confections et alertes WhatsApp" },
+      'mesures': { title: "📐 Carnet de Mesures", subtitle: "Mensurations clients en centimètres (cm)" },
+      'catalogue': { title: "✂️ Modèles & Métrages", subtitle: "Catalogue et barèmes de confections" },
+      'caisse': { title: "💰 Caisse & Acomptes", subtitle: "Paiements et relances des soldes impayés" },
+      'client-public': { title: "🌐 Portail Suivi Client", subtitle: "Aperçu de la page de suivi client en direct" },
+      'abonnement': { title: "🛡️ Mon Forfait SaaS", subtitle: "Forfait AfriCouture Pro (15 000 FCFA/mois)" }
+    };
+
+    let clients = [];
+    let orders = [];
+    let currentTab = 'dashboard';
+    let currentOrderFilter = 'all';
+    let isCloudBackend = false;
+
+    async function initApp() {
+      // 1. Charger le cache local immédiatement pour affichage instantané
+      const savedClients = localStorage.getItem("africouture_v6_clients");
+      const savedOrders = localStorage.getItem("africouture_v6_orders");
+      clients = savedClients ? JSON.parse(savedClients) : SEED_CLIENTS;
+      orders = savedOrders ? JSON.parse(savedOrders) : SEED_ORDERS;
+      refreshData();
+
+      const d = new Date(Date.now() + 7 * 86400000).toISOString().split('T')[0];
+      document.getElementById("fDeliveryDate").value = d;
+      switchTab('dashboard');
+
+      // 2. Synchroniser avec le Cloud Backend API
+      await syncWithCloud();
+    }
+
+    async function syncWithCloud() {
+      try {
+        const healthRes = await fetch('/api/health');
+        if (healthRes.ok) {
+          isCloudBackend = true;
+          const healthData = await healthRes.json();
+          console.log("[AfriCouture Cloud] Backend connecté :", healthData);
+
+          // Récupérer les commandes depuis le Cloud
+          const ordersRes = await fetch('/api/orders');
+          if (ordersRes.ok) {
+            const data = await ordersRes.json();
+            if (data.orders) orders = data.orders;
+          }
+
+          // Récupérer les clients depuis le Cloud
+          const clientsRes = await fetch('/api/clients');
+          if (clientsRes.ok) {
+            const data = await clientsRes.json();
+            if (data.clients) clients = data.clients;
+          }
+
+          persistLocal();
+          refreshData();
+        }
+      } catch (e) {
+        console.warn("[AfriCouture] Mode local/hors ligne actif :", e);
+      }
+    }
+
+    function persist() {
+      persistLocal();
+      refreshData();
+    }
+
+    function persistLocal() {
+      localStorage.setItem("africouture_v6_clients", JSON.stringify(clients));
+      localStorage.setItem("africouture_v6_orders", JSON.stringify(orders));
+    }
+
+    function switchTab(tabId) {
+      currentTab = tabId;
+      closeDrawer();
+
+      document.querySelectorAll(".tab-pane").forEach(el => el.classList.add("hidden"));
+      const targetPane = document.getElementById("tab-" + tabId);
+      if (targetPane) targetPane.classList.remove("hidden");
+
+      const info = TAB_INFO[tabId] || { title: tabId, subtitle: "" };
+      document.getElementById("currentTabTitle").innerHTML = info.title;
+      document.getElementById("currentTabSubtitle").textContent = info.subtitle;
+
+      // Boutons Sidebar
+      document.querySelectorAll(".nav-btn").forEach(btn => {
+        btn.className = "nav-btn touch-target w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-medium text-slate-300 hover:text-white hover:bg-nuit-800 transition-all text-left active:scale-98";
+      });
+      const activeNav = document.getElementById("nav-" + tabId);
+      if (activeNav) {
+        activeNav.className = "nav-btn touch-target w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-semibold transition-all text-left bg-amber-500/15 text-amber-400 border border-amber-500/30 active:scale-98";
+      }
+
+      // Barre Inférieure Mobile
+      document.querySelectorAll(".bnav-btn").forEach(btn => {
+        btn.className = "bnav-btn touch-target flex flex-col items-center justify-center flex-1 py-1 text-slate-400 font-medium active:scale-95 transition-transform";
+      });
+      const activeBnav = document.getElementById("bnav-" + tabId);
+      if (activeBnav) {
+        activeBnav.className = "bnav-btn touch-target flex flex-col items-center justify-center flex-1 py-1 text-amber-400 font-bold active:scale-95 transition-transform";
+      }
+
+      document.querySelector("main").scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function openDrawer() { document.body.classList.add("drawer-open"); }
+    function closeDrawer() { document.body.classList.remove("drawer-open"); }
+
+    function refreshData() {
+      let totCa = 0, totDep = 0, activeCount = 0;
+      orders.forEach(o => {
+        totCa += Number(o.total) || 0;
+        totDep += Number(o.deposit) || 0;
+        if (o.status !== 'livre') activeCount++;
+      });
+      const totRest = totCa - totDep;
+
+      document.getElementById("kpiTotalCa").textContent = totCa.toLocaleString('fr-FR') + " FCFA";
+      document.getElementById("kpiTotalDeposit").textContent = totDep.toLocaleString('fr-FR') + " FCFA";
+      document.getElementById("kpiTotalRemaining").textContent = totRest.toLocaleString('fr-FR') + " FCFA";
+      document.getElementById("kpiActiveOrders").textContent = activeCount;
+
+      document.getElementById("badgeOrdersCount").textContent = orders.length;
+      document.getElementById("badgeClientsCount").textContent = clients.length;
+      document.getElementById("countAll").textContent = orders.length;
+
+      document.getElementById("caisseTotalDeposit").textContent = totDep.toLocaleString('fr-FR') + " FCFA";
+      document.getElementById("caisseTotalRemaining").textContent = totRest.toLocaleString('fr-FR') + " FCFA";
+
+      renderDashboardUrgent();
+      renderOrdersView();
+      renderClientsView();
+      renderCaisseView();
+      populateClientDropdown();
+    }
+
+    function renderDashboardUrgent() {
+      const container = document.getElementById("dashboardUrgentList");
+      const urgents = orders.filter(o => {
+        const diffDays = Math.ceil((new Date(o.deliveryDate) - new Date()) / 86400000);
+        return diffDays <= 2 && o.status !== 'livre';
+      });
+
+      if (urgents.length === 0) {
+        container.innerHTML = `<div class="p-3 text-slate-400 text-center rounded-xl bg-nuit-800">Aucune commande urgente dans les 48h.</div>`;
+        return;
+      }
+
+      let html = "";
+      urgents.forEach(o => {
+        const diffDays = Math.max(0, Math.ceil((new Date(o.deliveryDate) - new Date()) / 86400000));
+        html += `
+          <div class="p-3 rounded-xl bg-nuit-800 border border-slate-800 flex items-center justify-between">
+            <div>
+              <div class="flex items-center gap-1.5">
+                <strong class="text-white text-xs">${o.clientName}</strong>
+                <span class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-rose-500/20 text-rose-400">J-${diffDays}</span>
+              </div>
+              <p class="text-[11px] text-slate-400">${o.item}</p>
+            </div>
+            <button onclick="whatsappAlert('${o.id}')" class="touch-target px-3 py-1.5 rounded-lg bg-emerald-500/15 text-emerald-400 text-xs font-bold active:scale-95">
+              WhatsApp
+            </button>
+          </div>
+        `;
+      });
+      container.innerHTML = html;
+    }
+
+    function setOrderFilter(f) {
+      currentOrderFilter = f;
+      document.querySelectorAll(".filter-tab-btn").forEach(b => {
+        b.className = "filter-tab-btn touch-target px-3.5 py-2 rounded-xl text-xs font-medium text-slate-300 bg-nuit-850 border border-slate-800 shrink-0";
+      });
+      const active = document.getElementById("filter-" + f);
+      if (active) {
+        active.className = "filter-tab-btn touch-target px-3.5 py-2 rounded-xl text-xs font-bold bg-amber-500 text-slate-950 shrink-0";
+      }
+      renderOrdersView();
+    }
+
+    function renderOrdersView() {
+      const container = document.getElementById("ordersContainer");
+      const search = (document.getElementById("orderSearchInput")?.value || "").toLowerCase();
+
+      let list = orders.filter(o => {
+        const rest = o.total - o.deposit;
+        const diffDays = Math.ceil((new Date(o.deliveryDate) - new Date()) / 86400000);
+
+        let matchFilter = true;
+        if (currentOrderFilter === 'encours') matchFilter = (o.status !== 'livre');
+        else if (currentOrderFilter === 'bazin') matchFilter = (o.category === 'bazin' || o.item.toLowerCase().includes('bazin'));
+        else if (currentOrderFilter === 'wax') matchFilter = (o.category === 'wax' || o.item.toLowerCase().includes('wax') || o.item.toLowerCase().includes('pagne'));
+        else if (currentOrderFilter === 'urgent') matchFilter = (diffDays <= 2 && o.status !== 'livre');
+        else if (currentOrderFilter === 'impaye') matchFilter = (rest > 0);
+
+        const matchSearch = o.clientName.toLowerCase().includes(search) || o.item.toLowerCase().includes(search) || o.id.toLowerCase().includes(search);
+        return matchFilter && matchSearch;
+      });
+
+      if (list.length === 0) {
+        container.innerHTML = `<div class="p-8 text-center text-xs text-slate-400 bg-nuit-850 rounded-2xl border border-slate-800">Aucune commande pour ce filtre.</div>`;
+        return;
+      }
+
+      let html = "";
+      list.forEach(o => {
+        const conf = STATUS_MAP[o.status] || STATUS_MAP.recu;
+        const rest = o.total - o.deposit;
+        const diffDays = Math.ceil((new Date(o.deliveryDate) - new Date()) / 86400000);
+
+        let urgentBadge = "";
+        if (diffDays <= 2 && o.status !== 'livre') {
+          urgentBadge = `<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-rose-500/20 text-rose-400 border border-rose-500/30">Urgent (${diffDays}j)</span>`;
+        }
+
+        html += `
+          <div class="p-4 rounded-2xl bg-nuit-850 border border-slate-800 space-y-3 shadow-sm">
+            
+            <div class="flex items-start justify-between gap-2">
+              <div>
+                <div class="flex items-center gap-1.5">
+                  <span class="font-mono text-amber-400 font-bold text-xs">${o.id}</span>
+                  ${urgentBadge}
+                </div>
+                <h4 class="font-bold text-white text-sm sm:text-base mt-0.5">${o.clientName}</h4>
+                <a href="tel:${o.phone}" class="text-xs text-slate-400 hover:text-white inline-flex items-center gap-1 mt-0.5">
+                  📞 ${o.phone}
+                </a>
+              </div>
+              <span class="px-2.5 py-1 rounded-full text-[10px] font-bold ${conf.color}">${conf.label}</span>
+            </div>
+
+            <div class="bg-nuit-800 p-3 rounded-xl border border-slate-800 text-xs space-y-1.5">
+              <p class="text-slate-100 font-semibold">${o.item}</p>
+              <div class="flex justify-between items-center text-slate-400 text-xs pt-1 border-t border-slate-750">
+                <span>Livraison : <strong class="text-white">${new Date(o.deliveryDate).toLocaleDateString('fr-FR')}</strong></span>
+                <span>Prix : <strong class="text-white">${o.total.toLocaleString('fr-FR')} F</strong></span>
+              </div>
+              <div class="flex justify-between items-center text-xs">
+                <span class="text-emerald-400 font-medium">Reçu : ${o.deposit.toLocaleString('fr-FR')} F</span>
+                <span class="font-bold ${rest > 0 ? 'text-amber-400' : 'text-slate-400'}">Solde : ${rest.toLocaleString('fr-FR')} FCFA</span>
+              </div>
+            </div>
+
+            <!-- Boutons Tactiles Spéciaux Téléphone -->
+            <div class="flex items-center gap-2 pt-0.5">
+              <select onchange="changeStatus('${o.id}', this.value)" class="touch-target flex-1 bg-nuit-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white font-medium focus:outline-none">
+                <option value="recu" ${o.status==='recu'?'selected':''}>1. Tissu Reçu</option>
+                <option value="coupe" ${o.status==='coupe'?'selected':''}>2. En Coupe</option>
+                <option value="confection" ${o.status==='confection'?'selected':''}>3. En Confection</option>
+                <option value="essayage" ${o.status==='essayage'?'selected':''}>4. Prêt Essayage</option>
+                <option value="pret" ${o.status==='pret'?'selected':''}>5. Prêt au Retrait</option>
+                <option value="livre" ${o.status==='livre'?'selected':''}>6. Livré & Clôturé</option>
+              </select>
+
+              <button onclick="whatsappAlert('${o.id}')" class="touch-target px-3.5 py-2 rounded-xl bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-400 border border-emerald-500/30 text-xs font-bold flex items-center gap-1 active:scale-95 shrink-0">
+                💬 WhatsApp
+              </button>
+
+              <button onclick="deleteOrder('${o.id}')" class="touch-target w-10 h-10 rounded-xl bg-nuit-800 text-slate-400 hover:text-rose-400 text-xs flex items-center justify-center shrink-0 active:scale-95">
+                ✕
+              </button>
+            </div>
+
+          </div>
+        `;
+      });
+      container.innerHTML = html;
+    }
+
+    function renderClientsView() {
+      const container = document.getElementById("clientsContainer");
+      const search = (document.getElementById("clientSearchInput")?.value || "").toLowerCase();
+
+      let list = clients.filter(c => c.name.toLowerCase().includes(search) || c.phone.includes(search));
+
+      if (list.length === 0) {
+        container.innerHTML = `<div class="p-8 text-center text-xs text-slate-400 bg-nuit-850 rounded-2xl border border-slate-800">Aucun client trouvé.</div>`;
+        return;
+      }
+
+      let html = "";
+      list.forEach(c => {
+        const m = c.measures || {};
+        html += `
+          <div class="p-4 rounded-2xl bg-nuit-850 border border-slate-800 space-y-3 shadow-sm">
+            <div class="flex items-start justify-between">
+              <div>
+                <h4 class="font-bold text-white text-sm sm:text-base flex items-center gap-1.5">
+                  ${c.name}
+                  <span class="text-[9px] px-2 py-0.5 rounded font-bold ${c.gender === 'Femme' ? 'bg-pink-500/15 text-pink-400' : 'bg-blue-500/15 text-blue-400'}">${c.gender}</span>
+                </h4>
+                <a href="tel:${c.phone}" class="text-xs text-slate-400 inline-block mt-0.5">📞 ${c.phone}</a>
+              </div>
+              <button onclick="editClient('${c.id}')" class="text-xs text-amber-400 font-bold hover:underline py-1 px-2">Modifier</button>
+            </div>
+
+            <!-- Grille des Mensurations Spéciale Téléphone (cm) -->
+            <div class="bg-nuit-800 p-2.5 rounded-xl border border-slate-800 text-xs">
+              <span class="text-[10px] text-slate-400 uppercase font-bold block mb-1">Mensurations (cm)</span>
+              <div class="grid grid-cols-3 gap-1.5 text-center font-mono">
+                <div class="bg-nuit-900 p-1.5 rounded-lg"><span class="text-[9px] text-slate-400 block">Épaule</span><strong>${m.epaule || '-'}</strong></div>
+                <div class="bg-nuit-900 p-1.5 rounded-lg"><span class="text-[9px] text-slate-400 block">Poitrine</span><strong>${m.poitrine || '-'}</strong></div>
+                <div class="bg-nuit-900 p-1.5 rounded-lg"><span class="text-[9px] text-slate-400 block">Taille</span><strong>${m.taille || '-'}</strong></div>
+                <div class="bg-nuit-900 p-1.5 rounded-lg"><span class="text-[9px] text-slate-400 block">Hanches</span><strong>${m.bassin || '-'}</strong></div>
+                <div class="bg-nuit-900 p-1.5 rounded-lg"><span class="text-[9px] text-slate-400 block">Manche</span><strong>${m.manche || '-'}</strong></div>
+                <div class="bg-nuit-900 p-1.5 rounded-lg"><span class="text-[9px] text-slate-400 block">Longueur</span><strong>${m.pantalon || '-'}</strong></div>
+              </div>
+            </div>
+
+            <button onclick="orderForClient('${c.id}')" class="touch-target w-full py-2.5 bg-amber-500/15 text-amber-400 hover:bg-amber-500/25 font-bold rounded-xl text-xs border border-amber-500/30 active:scale-98">
+              + Nouvelle Tenue pour ${c.name.split(' ')[0]}
+            </button>
+          </div>
+        `;
+      });
+      container.innerHTML = html;
+    }
+
+    function renderCaisseView() {
+      const container = document.getElementById("caisseUnpaidList");
+      const unpaids = orders.filter(o => (o.total - o.deposit) > 0);
+
+      if (unpaids.length === 0) {
+        container.innerHTML = `<div class="p-3 text-slate-400 text-center rounded-xl bg-nuit-800">Tous les comptes sont réglés. Aucun solde impayé.</div>`;
+        return;
+      }
+
+      let html = "";
+      unpaids.forEach(o => {
+        const rest = o.total - o.deposit;
+        html += `
+          <div class="p-3 rounded-xl bg-nuit-800 border border-slate-800 flex items-center justify-between gap-2">
+            <div>
+              <strong class="text-white text-xs">${o.clientName}</strong>
+              <p class="text-[11px] text-slate-400">${o.item}</p>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="text-amber-400 font-mono font-bold text-xs">${rest.toLocaleString('fr-FR')} F</span>
+              <button onclick="whatsappAlert('${o.id}')" class="touch-target px-2.5 py-1.5 rounded-lg bg-emerald-500/15 text-emerald-400 font-bold text-xs active:scale-95">
+                Relancer
+              </button>
+            </div>
+          </div>
+        `;
+      });
+      container.innerHTML = html;
+    }
+
+    function selectProposal(title, price) {
+      openOrderModal();
+      document.getElementById("fItem").value = title;
+      document.getElementById("fTotal").value = price;
+      document.getElementById("fDeposit").value = Math.round(price / 2);
+      calculateModalRest();
+    }
+
+    function calculateModalRest() {
+      const tot = Number(document.getElementById("fTotal").value) || 0;
+      const dep = Number(document.getElementById("fDeposit").value) || 0;
+      const rem = Math.max(0, tot - dep);
+      document.getElementById("fRest").value = rem.toLocaleString('fr-FR') + " FCFA";
+    }
+
+    async function changeStatus(id, newSt) {
+      const o = orders.find(ord => ord.id === id);
+      if (o) {
+        o.status = newSt;
+        persist();
+
+        // Synchroniser sur le Cloud en tâche de fond
+        try {
+          await fetch('/api/orders', {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id, status: newSt })
+          });
+        } catch(e) {}
+
+        if (newSt === 'essayage' || newSt === 'pret') {
+          setTimeout(() => {
+            if (confirm(`La commande ${id} est "${STATUS_MAP[newSt].label}". Envoyer une alerte WhatsApp au client ?`)) {
+              whatsappAlert(id);
+            }
+          }, 100);
+        }
+      }
+    }
+
+    function whatsappAlert(id) {
+      const o = orders.find(ord => ord.id === id);
+      if (!o) return;
+      const rest = o.total - o.deposit;
+      let msg = "";
+
+      if (o.status === 'essayage') {
+        msg = `Bonjour ${o.clientName},\nVotre commande "${o.item}" (Réf : ${o.id}) est prête pour votre essayage à l'Atelier Ciseau d'Or (Cocody Angré, Abidjan).\nÀ très bientôt !`;
+      } else if (o.status === 'pret') {
+        msg = `Bonjour ${o.clientName},\nVotre magnifique vêtement "${o.item}" (Réf : ${o.id}) est prêt.\nSolde restant au retrait : ${rest.toLocaleString('fr-FR')} FCFA.\nVous pouvez passer à l'atelier le récupérer !`;
+      } else {
+        msg = `Bonjour ${o.clientName},\nUn point sur votre commande "${o.item}" (Réf : ${o.id}) : étape "${STATUS_MAP[o.status].label}". Date promise : ${new Date(o.deliveryDate).toLocaleDateString('fr-FR')}.`;
+      }
+
+      const cleanPhone = o.phone.replace(/[^0-9]/g, '');
+      const fullPhone = cleanPhone.startsWith('225') ? cleanPhone : '225' + cleanPhone;
+      window.open(`https://wa.me/${fullPhone}?text=${encodeURIComponent(msg)}`, '_blank');
+    }
+
+    async function deleteOrder(id) {
+      if (confirm(`Supprimer la commande ${id} ?`)) {
+        orders = orders.filter(o => o.id !== id);
+        persist();
+        try {
+          await fetch(`/api/orders?id=${encodeURIComponent(id)}`, { method: 'DELETE' });
+        } catch(e) {}
+      }
+    }
+
+    function openModal(id) { document.getElementById(id).classList.remove("hidden"); }
+    function closeModal(id) { document.getElementById(id).classList.add("hidden"); }
+
+    function openOrderModal() {
+      document.getElementById("orderForm").reset();
+      populateClientDropdown();
+      calculateModalRest();
+      openModal('modalOrder');
+    }
+
+    function openClientModal() {
+      document.getElementById("clientForm").reset();
+      document.getElementById("cId").value = "";
+      document.getElementById("clientModalTitle").textContent = "Nouvelle Fiche de Mesures";
+      openModal('modalClient');
+    }
+
+    function populateClientDropdown() {
+      const sel = document.getElementById("fClientSelect");
+      if (!sel) return;
+      sel.innerHTML = `<option value="">-- Ou saisir un nouveau client ci-dessous --</option>`;
+      clients.forEach(c => { sel.innerHTML += `<option value="${c.id}">${c.name} (${c.phone})</option>`; });
+    }
+
+    function onSelectClientChange() {
+      const id = document.getElementById("fClientSelect").value;
+      if (id) {
+        const c = clients.find(cl => cl.id === id);
+        if (c) {
+          document.getElementById("fClientName").value = c.name;
+          document.getElementById("fClientPhone").value = c.phone;
+        }
+      }
+    }
+
+    async function submitOrder() {
+      const name = document.getElementById("fClientName").value.trim();
+      const phone = document.getElementById("fClientPhone").value.trim();
+      const item = document.getElementById("fItem").value.trim();
+      const deliveryDate = document.getElementById("fDeliveryDate").value;
+      const total = Number(document.getElementById("fTotal").value) || 0;
+      const deposit = Number(document.getElementById("fDeposit").value) || 0;
+
+      let cat = "autre";
+      if (item.toLowerCase().includes("bazin")) cat = "bazin";
+      else if (item.toLowerCase().includes("wax") || item.toLowerCase().includes("pagne")) cat = "wax";
+      else if (item.toLowerCase().includes("saharienne") || item.toLowerCase().includes("lin") || item.toLowerCase().includes("costume")) cat = "homme";
+
+      const newId = "CMD-" + (1000 + orders.length + 1);
+      const newOrder = { id: newId, clientName: name, phone, item, category: cat, total, deposit, deliveryDate, status: "recu" };
+      orders.unshift(newOrder);
+
+      if (!clients.find(c => c.phone === phone)) {
+        clients.push({ id: "CLI-" + (clients.length + 1), name, phone, gender: "Femme", measures: {} });
+      }
+
+      persist();
+      closeModal('modalOrder');
+      switchTab('commandes');
+
+      // Sauvegarde dans le Cloud API en arrière-plan
+      try {
+        await fetch('/api/orders', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(newOrder)
+        });
+      } catch(e) {}
+    }
+
+    async function submitClient() {
+      const id = document.getElementById("cId").value;
+      const name = document.getElementById("cName").value.trim();
+      const phone = document.getElementById("cPhone").value.trim();
+      const gender = document.getElementById("cGender").value;
+
+      const measures = {
+        epaule: document.getElementById("cm_epaule").value,
+        poitrine: document.getElementById("cm_poitrine").value,
+        taille: document.getElementById("cm_taille").value,
+        bassin: document.getElementById("cm_bassin").value,
+        manche: document.getElementById("cm_manche").value,
+        pantalon: document.getElementById("cm_pantalon").value
+      };
+
+      const payload = { id, name, phone, gender, measures };
+
+      if (id) {
+        const c = clients.find(cl => cl.id === id);
+        if (c) Object.assign(c, { name, phone, gender, measures });
+      } else {
+        clients.push({ id: "CLI-" + (clients.length + 1), name, phone, gender, measures });
+      }
+
+      persist();
+      closeModal('modalClient');
+      switchTab('mesures');
+
+      // Sauvegarde dans le Cloud API
+      try {
+        await fetch('/api/clients', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+      } catch(e) {}
+    }
+
+    function editClient(id) {
+      const c = clients.find(cl => cl.id === id);
+      if (!c) return;
+      document.getElementById("cId").value = c.id;
+      document.getElementById("cName").value = c.name;
+      document.getElementById("cPhone").value = c.phone;
+      document.getElementById("cGender").value = c.gender || "Femme";
+      const m = c.measures || {};
+      document.getElementById("cm_epaule").value = m.epaule || "";
+      document.getElementById("cm_poitrine").value = m.poitrine || "";
+      document.getElementById("cm_taille").value = m.taille || "";
+      document.getElementById("cm_bassin").value = m.bassin || "";
+      document.getElementById("cm_manche").value = m.manche || "";
+      document.getElementById("cm_pantalon").value = m.pantalon || "";
+      document.getElementById("clientModalTitle").textContent = "Modifier Mesures : " + c.name;
+      openModal('modalClient');
+    }
+
+    function orderForClient(cliId) {
+      openOrderModal();
+      document.getElementById("fClientSelect").value = cliId;
+      onSelectClientChange();
+    }
+
+    async function trackPublicOrder() {
+      const query = (document.getElementById("publicSearchInput").value || "").trim().toLowerCase();
+      const res = document.getElementById("publicResultContainer");
+      if (!query) return;
+
+      res.classList.remove("hidden");
+      res.innerHTML = `<div class="p-4 text-center text-xs text-amber-400">Recherche dans le cloud...</div>`;
+
+      let o = null;
+
+      // 1. Essayer d'abord l'API Cloud temps réel
+      try {
+        const apiRes = await fetch(`/api/track?q=${encodeURIComponent(query)}`);
+        if (apiRes.ok) {
+          const data = await apiRes.json();
+          if (data.order) o = data.order;
+        }
+      } catch(e) {}
+
+      // 2. Repli sur le cache local si hors ligne
+      if (!o) {
+        o = orders.find(ord => ord.id.toLowerCase() === query || ord.phone.includes(query));
+      }
+
+      if (!o) {
+        res.innerHTML = `
+          <div class="p-4 text-center text-xs text-rose-400 bg-nuit-850 border border-slate-800 rounded-2xl space-y-1">
+            <p class="font-bold">Aucune commande trouvée pour "${query}"</p>
+            <p class="text-slate-400">Vérifiez le numéro saisi lors du dépôt de votre tissu à l'atelier.</p>
+          </div>
+        `;
+        return;
+      }
+
+      const conf = STATUS_MAP[o.status] || STATUS_MAP.recu;
+      const rest = o.remaining !== undefined ? o.remaining : (o.total - o.deposit);
+
+      res.innerHTML = `
+        <div class="p-4 rounded-2xl bg-nuit-850 border border-amber-500/40 space-y-3 text-left">
+          <div class="flex justify-between items-start">
+            <div>
+              <span class="text-xs font-mono font-bold text-amber-400">${o.id}</span>
+              <h4 class="font-bold text-white text-sm sm:text-base mt-0.5">${o.item}</h4>
+              <p class="text-xs text-slate-400">Client : ${o.clientName}</p>
+            </div>
+            <span class="px-2 py-0.5 rounded-full text-xs font-bold ${conf.color}">${conf.label}</span>
+          </div>
+
+          <div class="p-2.5 bg-nuit-800 rounded-xl border border-slate-800 text-xs flex justify-between">
+            <span>Promise : <strong class="text-white">${new Date(o.deliveryDate).toLocaleDateString('fr-FR')}</strong></span>
+            <span>Solde : <strong class="text-amber-400 font-bold">${rest.toLocaleString('fr-FR')} FCFA</strong></span>
+          </div>
+        </div>
+      `;
+    }
+
+    window.addEventListener("DOMContentLoaded", initApp);
+  </script>
+</body>
+</html>
