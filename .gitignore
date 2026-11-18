@@ -1,0 +1,23 @@
+# Dépendances et environnement
+node_modules/
+.env
+.env.local
+.env.*.local
+
+# Fichiers et journaux locaux
+*.log
+scratch/
+.system_generated/
+
+# Scripts de serveur local (inutiles en production cloud)
+server.ps1
+tunnel.ps1
+deploy_*.ps1
+install_*.ps1
+setup_*.ps1
+
+# Fichiers système et éditeurs
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
