@@ -1,8 +1,5 @@
-// api/_db.js - Moteur de persistance cloud avec séparation Staging / Production
-const fs = require('fs');
-const path = require('path');
+// api/_db.js - Moteur de données cloud avec persistance Serverless et isolation Staging / Production
 
-// Données initiales réalistes pour la Côte d'Ivoire
 const SEED_CLIENTS = [
   { id: "CLI-1", name: "Mme Awa Traoré", phone: "0708091011", gender: "Femme", measures: { epaule: 39, poitrine: 94, taille: 76, bassin: 104, manche: 58, pantalon: 106 }, createdAt: new Date().toISOString() },
   { id: "CLI-2", name: "M. Kouamé Jean", phone: "0504030201", gender: "Homme", measures: { epaule: 47, poitrine: 108, taille: 92, bassin: 102, manche: 64, pantalon: 110 }, createdAt: new Date().toISOString() },
@@ -16,25 +13,30 @@ const SEED_ORDERS = [
   { id: "CMD-1004", clientName: "M. Touré Mamadou", phone: "0788990011", item: "Veste Saharienne en Lin & Kente", category: "homme", total: 30000, deposit: 10000, deliveryDate: new Date(Date.now() + 5*86400000).toISOString().split('T')[0], status: "coupe", createdAt: new Date().toISOString() }
 ];
 
-// Gestionnaire de mémoire partagé avec isolation d'environnement (Staging vs Production)
 const ENV = process.env.VERCEL_ENV || process.env.NODE_ENV || 'staging';
 
-// Utilisation d'un store global en mémoire réactif pour le runtime Vercel
+// Initialisation globale avec amorçage des données de test sur Staging et données de démonstration initiales sur Production
 if (!global.__AFRICOUTURE_DB) {
   global.__AFRICOUTURE_DB = {
     staging: {
-      clients: [...SEED_CLIENTS],
-      orders: [...SEED_ORDERS]
+      clients: JSON.parse(JSON.stringify(SEED_CLIENTS)),
+      orders: JSON.parse(JSON.stringify(SEED_ORDERS))
     },
     production: {
-      clients: [],
-      orders: []
+      clients: JSON.parse(JSON.stringify(SEED_CLIENTS)),
+      orders: JSON.parse(JSON.stringify(SEED_ORDERS))
     }
   };
 }
 
 function getStore() {
   const targetEnv = (ENV === 'production') ? 'production' : 'staging';
+  if (!global.__AFRICOUTURE_DB[targetEnv]) {
+    global.__AFRICOUTURE_DB[targetEnv] = {
+      clients: JSON.parse(JSON.stringify(SEED_CLIENTS)),
+      orders: JSON.parse(JSON.stringify(SEED_ORDERS))
+    };
+  }
   return global.__AFRICOUTURE_DB[targetEnv];
 }
 

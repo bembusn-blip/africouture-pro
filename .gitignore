@@ -21,3 +21,4 @@ setup_*.ps1
 Thumbs.db
 .vscode/
 .idea/
+.vercel
